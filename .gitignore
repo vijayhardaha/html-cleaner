@@ -1,0 +1,304 @@
+# =======================================================================
+# Git Ignore
+# =======================================================================
+# Purpose: Prevent build artifacts, local config, and sensitive
+#          credentials from entering version control.
+# Scope:   Next.js, Svelte, WordPress — npm, pnpm, yarn, bun.
+# Docs:    https://git-scm.com/docs/gitignore
+# =======================================================================
+
+# ----------------------------------------------------------------------
+# Dependency Managers (Node)
+# ----------------------------------------------------------------------
+# Large binary folders and lockfile caches.
+.pnp/
+.pnp.*
+
+# Bun
+.bun/
+
+# Node
+node_modules/
+
+# Yarn 2+ Zero-Installs
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# ----------------------------------------------------------------------
+# Dependencies (Php)
+# ----------------------------------------------------------------------
+# Composer dependencies for WordPress / Laravel projects.
+/languages
+vendor/
+
+# ----------------------------------------------------------------------
+# Go
+# ----------------------------------------------------------------------
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work
+go.work.sum
+
+# ----------------------------------------------------------------------
+# Build & Compilation Output
+# ----------------------------------------------------------------------
+# Next.js / React
+.next/
+/out/
+
+# Svelte
+.svelte-kit/
+
+# Nuxt
+.nuxt/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# PostCSS
+.postcssrc
+
+# Bundler output
+build/
+dist/
+
+# ----------------------------------------------------------------------
+# Cache Directories
+# ----------------------------------------------------------------------
+# Esbuild / tsdown
+.cache/
+
+# GitHub CLI
+.gh-cache
+
+# Gulp
+.gulp/
+
+# Parcel
+.parcel-cache/
+
+# Phpcs
+.phpcs-cache
+
+# Rollup
+.rollup.cache/
+
+# Turborepo
+.turbo/
+
+# Vite / Vitest
+.vite/
+.vitest/
+
+# Webpack
+.webpack/
+
+# Linter / Formatter caches
+.eslintcache
+.ruff_cache
+.stylelintcache
+
+# ----------------------------------------------------------------------
+# Testing & Coverage
+# ----------------------------------------------------------------------
+# Coverage reports
+.nyc_output/
+coverage/
+
+# Jest
+.jest/
+
+# Playwright
+blob-report/
+playwright-report/
+test-results/
+
+# Vitest
+vitest-results/
+
+# ----------------------------------------------------------------------
+# Editor & Ide Settings
+# ----------------------------------------------------------------------
+# These are developer-specific, not project-specific.
+# .vscode/
+.idea/
+.vscode-insiders/
+*.swp
+*.swo
+
+# Vim
+[._]*.s[a-v][a-z]
+!*.svg  # comment out if you don't need vector files
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+Session.vim
+Sessionx.vim
+.netrwhist
+[._]*.un~
+
+# ----------------------------------------------------------------------
+# System & Os Junk
+# ----------------------------------------------------------------------
+# macOS
+.AppleDouble
+.AppleDB
+.AppleDesktop
+.apdisk
+._*
+.com.apple.timemachine.donotpresent
+.DocumentRevisions-V100
+.DS_Store
+.fseventsd
+.LSOverride
+.Spotlight-V100
+.TemporaryItems
+Temporary Items
+.Trashes
+.VolumeIcon.icns
+Icon
+Network Trash Folder
+
+# Windows
+$RECYCLE.BIN/
+Desktop.ini
+Thumbs.db
+ehthumbs.db
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ----------------------------------------------------------------------
+# Deployment (Platform-Specific)
+# ----------------------------------------------------------------------
+# Cloudflare
+.wrangler/
+
+# Netlify
+.netlify/
+
+# Vercel
+.vercel/
+
+# ----------------------------------------------------------------------
+# Log Files
+# ----------------------------------------------------------------------
+# Application, server, and framework logs across all project types.
+*.log
+
+# Node.js / npm / pnpm
+npm-debug.log*
+pnpm-debug.log*
+pnpm-error.log*
+
+# Yarn
+yarn-debug.log*
+yarn-error.log*
+
+# Bun
+bun-debug.log*
+bun-error.log*
+
+# Next.js
+# (Nuxt build output is listed under Build & Compilation Output)
+
+# Python
+*.pyc
+*.pyo
+__pycache__/
+.tox/
+
+# PHP
+error_log
+php-error.log
+wp-content/debug.log
+wp-content/uploads/debug.log
+
+# Laravel / Symfony / Rails / Django
+/storage/logs/
+/log/
+/logs/
+
+# ----------------------------------------------------------------------
+# Redis
+# ----------------------------------------------------------------------
+*.rdb
+
+# ----------------------------------------------------------------------
+# PM2 / Forever / Process Managers
+# ----------------------------------------------------------------------
+*.log.*
+.pm2/
+
+# Syslog
+syslog/
+syslog.log
+
+# ----------------------------------------------------------------------
+# Temporary Files
+# ----------------------------------------------------------------------
+# Scratch data, prepared commands, local workflow artifacts.
+.tmp/
+tmp/
+coverage.txt
+
+# ----------------------------------------------------------------------
+# Ai Coding Tools
+# ----------------------------------------------------------------------
+# Local state, conversation history, and caches from AI agents.
+.antigravitycli
+.claude
+.cline
+.codex
+.commandcode
+.copilot
+.cursor
+.fallow
+.freebuff
+.gemini
+.kilo
+.kilocode
+.mimocode
+.openclaude
+.opencode
+.vibe
+
+# ----------------------------------------------------------------------
+# Seo & Generated Data
+# ----------------------------------------------------------------------
+# Auto-generated files that don't need version control.
+# Matches nested public/ folders (public/, app/public/, web/public/) and
+# any sitemap*.xml anywhere in the tree (sitemap.xml, sitemap-01.xml).
+**/public/robots.txt
+**/public/sitemap*.xml
+sitemap*.xml
+
+# ----------------------------------------------------------------------
+# Environment & Secrets
+# ----------------------------------------------------------------------
+# WARNING: Do not remove these unless you have an encryption layer.
+.env
+.env.*
+!.env.example
+*.pem
+
+# ----------------------------------------------------------------------
+# Ai Instruction Files (Track These)
+# ----------------------------------------------------------------------
+# Project-level instruction files should be COMMITTED, not ignored.
+# CLAUDE.md, AGENTS.md, .cursorrules, .kilocode/, .qoder/ (config only)
+# Do NOT add these to .gitignore.

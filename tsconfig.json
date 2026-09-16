@@ -1,0 +1,26 @@
+// =======================================================================
+// Typescript Configuration
+// =======================================================================
+// Purpose: Static type-checking and module resolution strategy for the
+//          repository, ensuring predictable behavior and strong typing
+//          across code.
+// Docs:    https://www.typescriptlang.org/tsconfig
+// =======================================================================
+
+{
+  "extends": "@vijayhardaha/dev-config/tsconfig",
+  "compilerOptions": {
+    "paths": { "@/*": ["./src/*"] },
+    // ----------------------------------------------------------------------
+    // Plugins & extras
+    // ----------------------------------------------------------------------
+    "plugins": [{ "name": "next" }]
+  },
+
+  // ---- Includes ----
+  // Files to include in the project type-checking scope
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+
+  // ---- Excludes ----
+  "exclude": ["node_modules", "build", "dist", "out", "coverage", "public"]
+}
