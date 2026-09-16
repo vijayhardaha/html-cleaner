@@ -2,10 +2,20 @@
  * ========================================================================
  * html-cleaner-cli - library entry point
  * ========================================================================
- * Purpose: Public surface of the html-cleaner library. The cleaner engine
- *          and its types are exported from here; internal transforms stay
- *          private so consumers depend only on stable API.
+ * Purpose: Public surface of the html-cleaner library. Only the cleaner
+ *          engine and its stable types are exported; internal transforms stay
+ *          private so consumers depend on a deliberate API.
  * ========================================================================
  */
 
-export const VERSION = '0.1.0';
+export { cleanHtml, resolveOptions, buildTransforms } from './core/cleaner';
+export { createDefaultOptions, DEFAULT_OPTIONS } from './core/types';
+export type {
+  AttributeOptions,
+  CleanerOptions,
+  CleanResult,
+  FormatOptions,
+  HtmlTransform,
+  TransformContext,
+  TransformStats,
+} from './core/types';
