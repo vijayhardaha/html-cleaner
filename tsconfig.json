@@ -9,18 +9,12 @@
 
 {
   "extends": "@vijayhardaha/dev-config/tsconfig",
-  "compilerOptions": {
-    "paths": { "@/*": ["./src/*"] },
-    // ----------------------------------------------------------------------
-    // Plugins & extras
-    // ----------------------------------------------------------------------
-    "plugins": [{ "name": "next" }]
-  },
+  "compilerOptions": { "paths": { "@/*": ["./src/*"] } },
 
   // ---- Includes ----
   // Files to include in the project type-checking scope
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["src/**/*.ts", "tests/**/*.ts", "vite.config.ts", "vitest.config.ts", "vitest.setup.ts"],
 
   // ---- Excludes ----
-  "exclude": ["node_modules", "build", "dist", "out", "coverage", "public"]
+  "exclude": ["node_modules", "dist", "coverage"]
 }

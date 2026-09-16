@@ -2,12 +2,13 @@
  * ========================================================================
  * Vite Configuration
  * ========================================================================
- * Purpose: Builds the CLI as a Node.js library (ESM format) for distribution.
- * Docs:    https://vitejs.dev/config/
+ * Purpose: Builds the html-cleaner library and CLI as Node.js ESM output
+ *          for distribution.
+ * Docs:    https://vite.dev/config/
  * ========================================================================
  */
 
-import { builtinModules } from 'module';
+import { builtinModules } from 'node:module';
 import { resolve } from 'node:path';
 
 import { defineConfig } from 'vite';
@@ -20,24 +21,23 @@ export default defineConfig({
     outDir: 'dist',
     emptyOutDir: true,
     sourcemap: true,
-    minify: true,
-    target: 'node18',
+    minify: false,
+    target: 'node20',
     ssr: true,
 
-    // CLI entry point - produces dist/vdo.js
-    lib: { entry: resolve('.', 'src/bin/vdo.ts'), name: 'vdo', fileName: 'vdo', formats: ['es'] },
+    // Library entry point - produces dist/index.js
+    lib: { entry: { index: resolve('.', 'src/index.ts') }, formats: ['es'] },
 
     rollupOptions: {
       external: [
         ...builtinModules,
         ...builtinModules.map((m) => `node:${m}`),
         'commander',
-        'cli-progress',
-        'axios',
-        'is-unicode-supported',
-        'yoctocolors',
+        'rehype-parse',
+        'rehype-stringify',
+        'unified',
       ],
-      output: { preserveModules: false, entryFileNames: '[name].js' },
+      output: { entryFileNames: '[name].js', chunkFileNames: '[name].js' },
     },
   },
 });

@@ -1,0 +1,21 @@
+// =======================================================================
+// Typescript Build Configuration (declaration emit)
+// =======================================================================
+// Purpose: Emits .d.ts + .d.ts.map for the library entry into dist/.
+//          The JavaScript bundles themselves are produced by Vite.
+// =======================================================================
+
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
+    "incremental": false,
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "coverage", "tests"]
+}
