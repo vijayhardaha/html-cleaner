@@ -10,7 +10,7 @@
   "compilerOptions": {
     "noEmit": false,
     "declaration": true,
-    "declarationMap": true,
+    "declarationMap": false,
     "emitDeclarationOnly": true,
     "incremental": false,
     "rootDir": "src",

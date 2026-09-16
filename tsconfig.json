@@ -6,15 +6,39 @@
 //          across code.
 // Docs:    https://www.typescriptlang.org/tsconfig
 // =======================================================================
+// Note: `noEmit` is deliberate. TypeScript type-checks every file here
+// (src, tests, and build configs) but never writes output, so no stray
+// `vite.config.d.ts` / `vitebin.config.d.ts` / `vitest.setup.d.ts` are
+// produced. Library declarations are emitted by the Vite build into
+// `types/` instead - see `vite.config.ts`.
+// =======================================================================
 
 {
-  "extends": "@vijayhardaha/dev-config/tsconfig",
-  "compilerOptions": { "paths": { "@/*": ["./src/*"] } },
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false,
+    "declaration": true,
+    "declarationDir": "types",
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "noEmitOnError": true,
+    "pretty": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ESNext",
+    "types": ["vitest/globals", "node"]
+  },
 
   // ---- Includes ----
   // Files to include in the project type-checking scope
-  "include": ["src/**/*.ts", "tests/**/*.ts", "vite.config.ts", "vitest.config.ts", "vitest.setup.ts"],
+  "include": ["*.config.mjs", "*.config.ts", "*.d.ts", "**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "**/*.mjs", "**/*.cjs"],
 
   // ---- Excludes ----
-  "exclude": ["node_modules", "dist", "coverage"]
+  "exclude": ["node_modules", "coverage", "dist", "types"]
 }
