@@ -9,7 +9,7 @@
     "node": ">=20"
   },
   "bin": {
-    "html-cleaner": "./dist/cli/index.js"
+    "html-cleaner": "./dist/cli/index.cjs"
   },
   "exports": {
     ".": {
@@ -18,8 +18,12 @@
     }
   },
   "scripts": {
-    "build": "vite build && bun run scripts/build-cjs.ts && tsc -p tsconfig.build.json",
+    "build": "vite build && vite build --config vitebin.config.ts && tsc -p tsconfig.build.json",
+    "build:lib": "vite build",
+    "build:bin": "vite build --config vitebin.config.ts",
+    "build:types": "tsc -p tsconfig.build.json",
     "dev": "vite build --watch",
+    "dev:bin": "vite build --config vitebin.config.ts --watch",
     "format": "prettier --write --log-level error .",
     "format:check": "prettier --check --log-level error .",
     "typecheck": "tsc --noEmit",
@@ -51,7 +55,6 @@
     "@typescript-eslint/parser": "^8.70.0",
     "@vijayhardaha/dev-config": "^2.6.2",
     "@vitest/coverage-v8": "^5.0.1",
-    "esbuild": "^0.28.2",
     "eslint": "^10.10.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "^4.4.5",
@@ -61,6 +64,8 @@
     "globals": "^17.12.0",
     "husky": "^9.1.7",
     "prettier": "^3.9.7",
+    "rolldown": "^1.2.9",
+    "rolldown-plugin-dts": "^0.28.6",
     "typescript": "6",
     "typescript-eslint": "^8.70.0",
     "vite": "^8.3.0",
