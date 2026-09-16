@@ -67,6 +67,12 @@ describe('formatHtml whitespace rules', () => {
   it('keeps text-only output unchanged', () => {
     expect(format('plain text')).toBe('plain text');
   });
+
+  it('does not stack a new newline when a text node already ends a line', () => {
+    expect(format('text\n<div>a</div>')).toBe('text\n<div>a</div>');
+    expect(format('text  \n\n<div>a</div>')).toBe('text\n<div>a</div>');
+    expect(format(format('text\n<div>a</div>'))).toBe('text\n<div>a</div>');
+  });
 });
 
 describe('formatHtml newline styles', () => {

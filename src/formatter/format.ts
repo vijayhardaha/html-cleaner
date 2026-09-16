@@ -83,10 +83,14 @@ function layoutContainer(
     }
 
     if (child.type === 'text') {
-      // Keep one separating newline after a block sibling and replace any
-      // leading line breaks with it, so repeated formatting passes stay
-      // idempotent instead of stacking extra newline nodes before the text.
-      const textValue = child.value.replace(/^[ \t]*(?:\r\n|\r|\n)+[ \t\r\n]*/, '');
+      // The formatter owns separators inside a laid-out container: replace
+      // leading line breaks with the single separating newline, and drop
+      // trailing line breaks for the same reason. Without the trailing half, a
+      // second pass re-parses "text\n<div>" as a text node that already ends a
+      // line and stacks another newline on top of it.
+      const textValue = child.value
+        .replace(/^[ \t]*(?:\r\n|\r|\n)+[ \t\r\n]*/, '')
+        .replace(/[ \t]*(?:\r\n|\r|\n)+[ \t]*$/, '');
 
       next.push(layoutText((afterBlock ? childIndent : '') + textValue));
       afterBlock = false;
