@@ -9,120 +9,155 @@
 
 import type { Root } from 'hast';
 
-/** Option group controlling generic attribute filtering. */
+/**
+ * Option group controlling generic attribute filtering.
+ *
+ * @property {boolean} removeAttributes - Remove every attribute except the names listed in `keepAttributes`.
+ * @property {string[]} keepAttributes - Attribute names that survive `removeAttributes`.
+ * @property {string[]} removeAttributeNames - Explicit attribute names to remove, matched case-insensitively.
+ */
 export interface AttributeOptions {
-  /** Remove every attribute except the names listed in `keepAttributes`. */
   removeAttributes: boolean;
-  /** Attribute names that survive `removeAttributes`. */
   keepAttributes: string[];
-  /** Explicit attribute names to remove, matched case-insensitively. */
   removeAttributeNames: string[];
 }
 
-/** Option group controlling deterministic output formatting. */
+/**
+ * Option group controlling deterministic output formatting.
+ *
+ * @property {boolean} format - Enable AST-based formatting before serialization.
+ * @property {number | 'tab'} indent - Indentation unit: a number of spaces or a tab character.
+ * @property {'lf' | 'crlf'} newline - Line ending written into formatted output.
+ * @property {boolean} finalNewline - Append a trailing newline to formatted output.
+ */
 export interface FormatOptions {
-  /** Enable AST-based formatting before serialization. */
   format: boolean;
-  /** Indentation unit: a number of spaces or a tab character. */
   indent: number | 'tab';
-  /** Line ending written into formatted output. */
   newline: 'lf' | 'crlf';
-  /** Append a trailing newline to formatted output. */
   finalNewline: boolean;
 }
 
-/** Complete option set for a single cleaning run. */
+/**
+ * Complete option set for a single cleaning run.
+ *
+ * @property {boolean} removeAttributes - Remove every attribute except those kept by name.
+ * @property {string[]} keepAttributes - Attribute names preserved by generic attribute removal.
+ * @property {string[]} removeAttributeNames - Attribute names removed explicitly.
+ * @property {boolean} removeStyles - Remove `style` attributes.
+ * @property {boolean} removeClasses - Remove `class` attributes.
+ * @property {boolean} removeIds - Remove `id` attributes.
+ * @property {boolean} stripTags - Strip all element markup while keeping textual content.
+ * @property {boolean} preserveBreaksWhenStripping - Emit readable line breaks when stripping tags.
+ * @property {boolean} collapseNbsp - Collapse runs of non-breaking spaces into regular spaces.
+ * @property {boolean} removeEmptyNbsp - Treat whitespace/NBSP-only nodes as empty content.
+ * @property {boolean} convertBold - Convert `<b>` elements to `<strong>`.
+ * @property {boolean} convertItalic - Convert `<i>` elements to `<em>`.
+ * @property {boolean} removeEmpty - Remove non-void elements without meaningful content.
+ * @property {boolean} removeSpans - Unwrap `<span>` elements while keeping their children.
+ * @property {boolean} removeImages - Remove `<img>` elements.
+ * @property {boolean} removeLinks - Unwrap `<a>` elements while keeping their children.
+ * @property {boolean} removeTables - Remove table structure while preserving descendant content.
+ * @property {boolean} tablesToDiv - Rename table elements to `div` while preserving hierarchy.
+ * @property {boolean} removeComments - Remove comment nodes.
+ * @property {boolean} format - Enable deterministic output formatting.
+ * @property {number | 'tab'} indent - Indentation unit used by the formatter.
+ * @property {'lf' | 'crlf'} newline - Line ending used by the formatter.
+ * @property {boolean} finalNewline - Append a trailing newline to formatted output.
+ */
 export interface CleanerOptions extends AttributeOptions, FormatOptions {
-  /** Remove `style` attributes. */
   removeStyles: boolean;
-  /** Remove `class` attributes. */
   removeClasses: boolean;
-  /** Remove `id` attributes. */
   removeIds: boolean;
-  /** Strip all element markup while keeping textual content. */
   stripTags: boolean;
-  /** Emit readable line breaks when stripping tags. */
   preserveBreaksWhenStripping: boolean;
-  /** Collapse runs of non-breaking spaces into regular spaces. */
   collapseNbsp: boolean;
-  /** Treat whitespace/NBSP-only nodes as empty content. */
   removeEmptyNbsp: boolean;
-  /** Convert `<b>` elements to `<strong>`. */
   convertBold: boolean;
-  /** Convert `<i>` elements to `<em>`. */
   convertItalic: boolean;
-  /** Remove non-void elements without meaningful content. */
   removeEmpty: boolean;
-  /** Unwrap `<span>` elements while keeping their children. */
   removeSpans: boolean;
-  /** Remove `<img>` elements including their content. */
   removeImages: boolean;
-  /** Unwrap `<a>` elements while keeping their children. */
   removeLinks: boolean;
-  /** Remove table structure while preserving descendant content. */
   removeTables: boolean;
-  /** Rename table elements to `div` while preserving hierarchy. */
   tablesToDiv: boolean;
-  /** Remove comment nodes. */
   removeComments: boolean;
 }
 
-/** Per-run counters describing what a cleaning pass changed. */
+/**
+ * Per-run counters describing what a cleaning pass changed.
+ *
+ * @property {number} removedComments - Comment nodes removed.
+ * @property {number} removedAttributes - Attributes dropped by generic attribute removal.
+ * @property {number} removedStyles - `style` attributes removed.
+ * @property {number} removedClasses - `class` attributes removed.
+ * @property {number} removedIds - `id` attributes removed.
+ * @property {number} removedEmptyNodes - Empty elements removed.
+ * @property {number} removedImages - Image elements removed.
+ * @property {number} unwrappedLinks - Anchor elements unwrapped.
+ * @property {number} unwrappedSpans - Span elements unwrapped.
+ * @property {number} convertedBold - `<b>` elements converted to `<strong>`.
+ * @property {number} convertedItalic - `<i>` elements converted to `<em>`.
+ * @property {number} removedTableElements - Table structural elements removed.
+ * @property {number} convertedTableElements - Table elements renamed to `div`.
+ * @property {number} normalizedNbspNodes - Nodes whose non-breaking spaces were normalized.
+ */
 export interface TransformStats {
-  /** Comment nodes removed. */
   removedComments: number;
-  /** Attributes dropped by generic attribute removal. */
   removedAttributes: number;
-  /** `style` attributes removed. */
   removedStyles: number;
-  /** `class` attributes removed. */
   removedClasses: number;
-  /** `id` attributes removed. */
   removedIds: number;
-  /** Empty elements removed. */
   removedEmptyNodes: number;
-  /** Image elements removed. */
   removedImages: number;
-  /** Anchor elements unwrapped. */
   unwrappedLinks: number;
-  /** Span elements unwrapped. */
   unwrappedSpans: number;
-  /** `<b>` elements converted to `<strong>`. */
   convertedBold: number;
-  /** `<i>` elements converted to `<em>`. */
   convertedItalic: number;
-  /** Table structural elements removed. */
   removedTableElements: number;
-  /** Table elements renamed to `div`. */
   convertedTableElements: number;
-  /** Nodes whose non-breaking spaces were normalized. */
   normalizedNbspNodes: number;
 }
 
-/** Execution state handed to every transform. */
+/**
+ * Execution state handed to every transform.
+ *
+ * @property {CleanerOptions} options - Options resolved for the current run.
+ * @property {TransformStats} stats - Counters updated by the transforms that run.
+ */
 export interface TransformContext {
-  /** Options resolved for this run. */
   options: CleanerOptions;
-  /** Counters updated by the transforms that run. */
   stats: TransformStats;
 }
 
-/** Independent, composable AST mutation. */
+/**
+ * Independent, composable AST mutation.
+ *
+ * @property {string} name - Stable identifier used for ordering and reporting.
+ */
 export interface HtmlTransform {
-  /** Stable identifier used for ordering and reporting. */
   name: string;
-  /** Apply the transformation to the tree in place. */
+
+  /**
+   * Apply the transformation to the tree in place.
+   *
+   * @param {Root} root - Parsed tree to mutate.
+   * @param {TransformContext} context - Resolved options and shared counters.
+   */
   apply(root: Root, context: TransformContext): void;
 }
 
-/** Result of one cleaning run. */
+/**
+ * Result of one cleaning run.
+ *
+ * @property {string} html - Serialized cleaned HTML.
+ * @property {TransformStats} stats - Counters collected while cleaning.
+ */
 export interface CleanResult {
-  /** Serialized cleaned HTML. */
   html: string;
-  /** Counters collected while cleaning. */
   stats: TransformStats;
 }
 
+/** Conservative default option set applied when a run enables nothing explicitly. */
 const defaultOptions: CleanerOptions = {
   removeAttributes: false,
   keepAttributes: [],
@@ -152,14 +187,14 @@ const defaultOptions: CleanerOptions = {
 Object.freeze(defaultOptions.keepAttributes);
 Object.freeze(defaultOptions.removeAttributeNames);
 
-/** Shared immutable default options; never mutate these in place. */
+/** Shared immutable defaults; never mutate this object in place. */
 export const DEFAULT_OPTIONS: Readonly<CleanerOptions> = Object.freeze(defaultOptions);
 
 /**
- * Create a fresh, mutable copy of the default options so callers can never
- * mutate the shared defaults.
+ * Create a fresh copy of the default options so callers can never mutate the
+ * shared defaults.
  *
- * @returns A new option object equal to `DEFAULT_OPTIONS`.
+ * @returns {CleanerOptions} A new option object equal to `DEFAULT_OPTIONS`.
  */
 export function createDefaultOptions(): CleanerOptions {
   return {
