@@ -18,7 +18,7 @@
     }
   },
   "scripts": {
-    "build": "vite build && tsc -p tsconfig.build.json",
+    "build": "vite build && bun run scripts/build-cjs.ts && tsc -p tsconfig.build.json",
     "dev": "vite build --watch",
     "format": "prettier --write --log-level error .",
     "format:check": "prettier --check --log-level error .",
@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "commander": "^15.0.0",
+    "property-information": "^7.2.0",
     "rehype-parse": "^9.0.1",
     "rehype-stringify": "^10.0.1",
     "unified": "^11.0.5"
@@ -50,6 +51,7 @@
     "@typescript-eslint/parser": "^8.70.0",
     "@vijayhardaha/dev-config": "^2.6.2",
     "@vitest/coverage-v8": "^5.0.1",
+    "esbuild": "^0.28.2",
     "eslint": "^10.10.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "^4.4.5",
