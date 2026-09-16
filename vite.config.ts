@@ -13,6 +13,10 @@ import { resolve } from 'node:path';
 
 import { defineConfig } from 'vite';
 
+const RUNTIME_EXTERNALS = ['commander', 'rehype-parse', 'rehype-stringify', 'unified'] as const;
+
+const external = [...builtinModules, ...builtinModules.map((moduleName) => `node:${moduleName}`), ...RUNTIME_EXTERNALS];
+
 export default defineConfig({
   // Shorthand for src/ imports
   resolve: { alias: { '@': resolve('.', 'src') } },
@@ -25,19 +29,10 @@ export default defineConfig({
     target: 'node20',
     ssr: true,
 
-    // Library entry point - produces dist/index.js
-    lib: { entry: { index: resolve('.', 'src/index.ts') }, formats: ['es'] },
+    // Library entry point - produces dist/index.js (ESM)
+    // CLI entry point - produces dist/cli/index.js (ESM)
+    lib: { entry: { index: resolve('.', 'src/index.ts'), 'cli/index': resolve('.', 'src/cli/index.ts') } },
 
-    rollupOptions: {
-      external: [
-        ...builtinModules,
-        ...builtinModules.map((m) => `node:${m}`),
-        'commander',
-        'rehype-parse',
-        'rehype-stringify',
-        'unified',
-      ],
-      output: { entryFileNames: '[name].js', chunkFileNames: '[name].js' },
-    },
+    rollupOptions: { external, output: [{ format: 'es', entryFileNames: '[name].js', chunkFileNames: '[name].js' }] },
   },
 });
