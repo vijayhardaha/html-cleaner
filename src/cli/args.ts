@@ -205,15 +205,17 @@ export function parseArgs(argv: string[]): ParsedCliOptions {
   try {
     program.parse(argv, { from: 'user' });
   } catch (error) {
-    if (error instanceof CommanderError) {
-      if (error.code === 'commander.helpDisplayed' || error.code === 'commander.version') {
-        throw new CliExitRequested(0);
-      }
-
-      throw new CliUsageError(error.message.replace(/^error: /, ''));
+    // Commander only ever throws CommanderError; this rethrow is defensive.
+    /* v8 ignore next 3 */
+    if (!(error instanceof CommanderError)) {
+      throw error;
     }
 
-    throw error;
+    if (error.code === 'commander.helpDisplayed' || error.code === 'commander.version') {
+      throw new CliExitRequested(0);
+    }
+
+    throw new CliUsageError(error.message.replace(/^error: /, ''));
   }
 
   const options = program.opts();

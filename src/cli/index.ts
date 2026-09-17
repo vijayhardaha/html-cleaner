@@ -9,7 +9,8 @@
  * ========================================================================
  */
 
-import { pathToFileURL } from 'node:url';
+import { realpathSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 import { CliExitRequested, CliUsageError, parseArgs } from './args';
 import type { ParsedCliOptions } from './args';
@@ -115,13 +116,15 @@ export async function runCli(
       return error.exitCode;
     }
 
-    if (error instanceof CliUsageError) {
-      environment.stderr(`${CLI_NAME}: ${error.message}\nRun "${CLI_NAME} --help" for usage.\n`);
-
-      return EXIT_USAGE;
+    // parseArgs only raises CliExitRequested or CliUsageError; this rethrow is defensive.
+    /* v8 ignore next 3 */
+    if (!(error instanceof CliUsageError)) {
+      throw error;
     }
 
-    throw error;
+    environment.stderr(`${CLI_NAME}: ${error.message}\nRun "${CLI_NAME} --help" for usage.\n`);
+
+    return EXIT_USAGE;
   }
 
   try {
@@ -169,10 +172,42 @@ export async function runCli(
 /** Flag describing whether stdin can be used in place of an input path. */
 export const STDIN_HINT = OPTION_HELP.stdin;
 
-const isMain = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
+// Entry-point guard below only runs when this file is executed as a binary, never when it is
+// imported, so it cannot be covered from tests. It is exercised for real by the built bundle:
+// see tests/cli/bin-symlink.test.ts, which spawns dist/cli/index.cjs through a .bin symlink.
+/* v8 ignore start */
+
+/**
+ * Detect whether this module is the process entry point.
+ *
+ * Package managers run a bin through a symlink in `node_modules/.bin`, so `process.argv[1]`
+ * is the symlink path while `import.meta.url` is the resolved real path. Comparing the two
+ * directly would never match and the CLI would exit silently, so both sides are canonicalized.
+ *
+ * @returns {boolean} True when this module was launched directly rather than imported.
+ */
+function isMainModule(): boolean {
+  const entry = process.argv[1];
+
+  if (entry === undefined) {
+    return false;
+  }
+
+  const self = fileURLToPath(import.meta.url);
+
+  try {
+    return realpathSync(entry) === realpathSync(self);
+  } catch {
+    return entry === self;
+  }
+}
+
+const isMain = isMainModule();
 
 if (isMain) {
   runCli(process.argv.slice(2)).then((code) => {
     process.exitCode = code;
   });
 }
+
+/* v8 ignore stop */
