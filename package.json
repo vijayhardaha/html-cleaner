@@ -2,6 +2,26 @@
   "name": "@vijayhardaha/html-cleaner",
   "version": "0.1.0",
   "description": "Command-line HTML cleaner: parses HTML into an AST, applies composable transformations, and serializes predictable cleaned HTML.",
+  "scripts": {
+    "build": "vite build && vite build --config vitebin.config.ts",
+    "build:js": "vite build",
+    "build:bin": "vite build --config vitebin.config.ts",
+    "dev": "vite build --watch",
+    "dev:bin": "vite build --config vitebin.config.ts --watch",
+    "format": "prettier --write --log-level error .",
+    "format:check": "prettier --check --log-level error .",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "lint:check": "eslint . --max-warnings 0",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "bench": "bun bench/cleaner.bench.ts",
+    "release": "release-it",
+    "release:dry": "release-it --dry-run",
+    "prepare": "husky"
+  },
   "keywords": [
     "html",
     "html-cleaner",
@@ -54,23 +74,6 @@
       "require": "./dist/index.cjs"
     }
   },
-  "scripts": {
-    "build": "vite build && vite build --config vitebin.config.ts",
-    "build:js": "vite build",
-    "build:bin": "vite build --config vitebin.config.ts",
-    "dev": "vite build --watch",
-    "dev:bin": "vite build --config vitebin.config.ts --watch",
-    "format": "prettier --write --log-level error .",
-    "format:check": "prettier --check --log-level error .",
-    "typecheck": "tsc --noEmit",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "lint:check": "eslint . --max-warnings 0",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "prepare": "husky"
-  },
   "dependencies": {
     "@types/hast": "^3.0.5"
   },
@@ -99,6 +102,7 @@
     "property-information": "^7.2.0",
     "rehype-parse": "^9.0.1",
     "rehype-stringify": "^10.0.1",
+    "release-it": "^21.0.3",
     "rolldown": "^1.2.9",
     "rollup": "^4.63.3",
     "typescript": "^6",
