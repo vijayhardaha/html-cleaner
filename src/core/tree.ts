@@ -125,7 +125,7 @@ function resolveNode(node: RootContent, map: (node: RootContent) => NodeMapping)
  * @returns {string} The matching HTML attribute name.
  */
 export function attributeName(propertyKey: string): string {
-  return find(html, propertyKey).attribute ?? propertyKey;
+  return find(html, propertyKey).attribute;
 }
 
 /**

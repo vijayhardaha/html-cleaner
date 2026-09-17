@@ -1,6 +1,6 @@
 /**
  * ========================================================================
- * html-cleaner-cli - library entry point
+ * html-cleaner - library entry point
  * ========================================================================
  * Purpose: Public surface of the html-cleaner library. Only the cleaner
  *          engine and its stable types are exported; internal transforms stay
