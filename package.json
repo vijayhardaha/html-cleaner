@@ -1,6 +1,6 @@
 {
   "name": "@vijayhardaha/html-cleaner",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Command-line HTML cleaner: parses HTML into an AST, applies composable transformations, and serializes predictable cleaned HTML.",
   "scripts": {
     "build": "vite build && vite build --config vitebin.config.ts",
