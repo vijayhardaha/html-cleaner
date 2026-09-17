@@ -52,7 +52,7 @@
     "node": ">=20.0.0"
   },
   "bin": {
-    "html-cleaner": "./dist/cli/index.cjs"
+    "html-cleaner": "dist/cli/index.cjs"
   },
   "files": [
     "dist",
