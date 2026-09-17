@@ -41,6 +41,13 @@ describe('stripAllTags with preserved breaks', () => {
 
     expect(result.html).toBe('abc');
   });
+
+  it('adds no break for a block element without content', () => {
+    const result = runTransform('<p></p><hr>', [stripAllTags(true)]);
+
+    expect(result.html).toBe('');
+    expect(result.root.children).toEqual([]);
+  });
 });
 
 describe('stripAllTags and non-visible content', () => {
