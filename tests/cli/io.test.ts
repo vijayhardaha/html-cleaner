@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { Readable } from 'node:stream';
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { assertSafeOutputTarget, readInput, readStdin, writeOutput } from '../../src/cli/io';
 
@@ -89,6 +89,18 @@ describe('writeOutput', () => {
 
   it('refuses in-place writing without a path', async () => {
     await expect(writeOutput('<p>x</p>', undefined, true)).rejects.toThrow('In-place writing requires an input file');
+  });
+
+  it('writes to stdout when no path is given', async () => {
+    const stdout = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
+
+    try {
+      await writeOutput('<p>to stdout</p>');
+
+      expect(stdout).toHaveBeenCalledWith('<p>to stdout</p>');
+    } finally {
+      stdout.mockRestore();
+    }
   });
 
   it('includes the path when a write fails', async () => {

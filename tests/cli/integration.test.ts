@@ -1,10 +1,11 @@
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { Readable } from 'node:stream';
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
-import { runCli } from '../../src/cli/index';
+import { createProcessEnvironment, runCli } from '../../src/cli/index';
 import type { CliEnvironment } from '../../src/cli/index';
 
 /**
@@ -137,6 +138,80 @@ describe('runCli end-to-end', () => {
     const code = await runCli(['in.html', '--write', '--output', 'out.html'], environment);
 
     expect(code).toBe(2);
+    expect(environment.err.join('')).toContain('--write and --output cannot be combined');
+  });
+
+  it('refuses --stdout with --output', async () => {
+    const environment = createTestEnvironment();
+    const code = await runCli(['in.html', '--stdout', '--output', 'out.html'], environment);
+
+    expect(code).toBe(2);
+    expect(environment.err.join('')).toContain('--stdout and --output cannot be combined');
+  });
+
+  it('refuses --write without an input file', async () => {
+    const environment = createTestEnvironment();
+    const code = await runCli(['--write'], environment);
+
+    expect(code).toBe(2);
+    expect(environment.err.join('')).toContain('--write requires an input file');
+  });
+
+  it('refuses --write with --stdin', async () => {
+    const environment = createTestEnvironment();
+    const code = await runCli(['in.html', '--write', '--stdin'], environment);
+
+    expect(code).toBe(2);
+    expect(environment.err.join('')).toContain('--write cannot be combined with --stdin');
+  });
+
+  it('loads options from a --config file', async () => {
+    const directory = await mkdtemp(join(tmpdir(), 'html-cleaner-config-'));
+    const configPath = join(directory, 'cleaner.config.json');
+
+    await writeFile(configPath, JSON.stringify({ removeClasses: true }), 'utf8');
+
+    try {
+      const environment = createTestEnvironment('<p class="x">hi</p>\n');
+      const code = await runCli(['--config', configPath], environment);
+
+      expect(code).toBe(0);
+      expect(environment.out.join('')).toBe('<p>hi</p>\n');
+    } finally {
+      await rm(directory, { recursive: true, force: true });
+    }
+  });
+});
+
+describe('createProcessEnvironment', () => {
+  it('writes to the real stdout and stderr', () => {
+    const stdout = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
+    const stderr = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
+
+    try {
+      const environment = createProcessEnvironment();
+
+      environment.stdout('to stdout');
+      environment.stderr('to stderr');
+
+      expect(stdout).toHaveBeenCalledWith('to stdout');
+      expect(stderr).toHaveBeenCalledWith('to stderr');
+    } finally {
+      stdout.mockRestore();
+      stderr.mockRestore();
+    }
+  });
+
+  it('reads the real stdin', async () => {
+    const stdin = vi.spyOn(process, 'stdin', 'get').mockReturnValue(Readable.from(['<p>', 'from stdin</p>']) as never);
+
+    try {
+      const environment = createProcessEnvironment();
+
+      await expect(environment.readStdin()).resolves.toBe('<p>from stdin</p>');
+    } finally {
+      stdin.mockRestore();
+    }
   });
 });
 
