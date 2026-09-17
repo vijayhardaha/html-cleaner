@@ -31,6 +31,8 @@ function createBinSymlink(): string {
  * @param {string} [input] - Text piped to standard input.
  *
  * @returns {{ stdout: string; status: number | null }} Captured output and exit code.
+ *
+ * @throws {Error} When the child process fails to spawn.
  */
 function runBin(target: string, args: string[], input = ''): { stdout: string; status: number | null } {
   const result = spawnSync(target, args, { input, encoding: 'utf8', timeout: 60_000 });
