@@ -87,6 +87,13 @@ describe('removeEmptyElements', () => {
     expect(result.html).toBe('');
   });
 
+  it('treats an element whose only child is a comment as empty', () => {
+    const result = runTransform('<p><!--note--></p>', [removeEmptyElements()]);
+
+    expect(result.html).toBe('');
+    expect(result.stats.removedEmptyNodes).toBe(1);
+  });
+
   it('leaves meaningful content untouched', () => {
     const result = runTransform('<p>Keep</p>', [removeEmptyElements()]);
 

@@ -54,6 +54,9 @@ function childHasContent(node: ElementContent, options: CleanerOptions): boolean
     return false;
   }
 
+  // ElementContent is Text | Comment | Element, and the two non-element cases are handled
+  // above, so this fallback is unreachable from parsed input. Kept as a defensive default.
+  /* v8 ignore next 3 */
   if (node.type !== 'element') {
     return true;
   }
