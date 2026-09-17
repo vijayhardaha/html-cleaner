@@ -51,6 +51,7 @@ export default defineConfig({
         '**/*.spec.{js,mjs,cjs,ts,tsx}',
         '**/dist/',
         '**/build/',
+        'src/index.ts',
       ],
     },
   },
