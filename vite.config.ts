@@ -1,39 +1,60 @@
 /**
- * ========================================================================
- * Vite Configuration
- * ========================================================================
- * Purpose: Builds the html-cleaner library as Node.js ESM output for
- *          distribution. The CLI executable is built separately by
- *          `vitebin.config.ts` (single CJS bundle with a shebang), and
- *          declarations are emitted to `types/` by `tsconfig.build.json`.
+ * ==============================================================================
+ * VITE CONFIG — Library Build (ESM + CJS)
+ * ==============================================================================
+ * Purpose: Build the library into dual formats (ESM/CJS) and emit type
+ *          declarations. The CLI executable is built separately by
+ *          `vitebin.config.ts` (single CJS bundle with a shebang).
  * Docs:    https://vite.dev/config/
- * ========================================================================
+ * ==============================================================================
  */
 
 import { builtinModules } from 'node:module';
-import { resolve } from 'node:path';
 
 import { defineConfig } from 'vite';
+import dts from 'vite-plugin-dts';
 
-const RUNTIME_EXTERNALS = ['commander', 'rehype-parse', 'rehype-stringify', 'unified'] as const;
+// -------------------------
+// Externals
+// -------------------------
+// Node built-ins are resolved by the runtime. Runtime dependencies are bundled
+// on purpose: unified, rehype-parse, rehype-stringify, and commander are
+// ESM-only, so a CJS output that `require()`s them throws ERR_REQUIRE_ESM on
+// Node 20. Bundling keeps both formats loadable everywhere.
+const external = [...builtinModules, ...builtinModules.map((moduleName) => `node:${moduleName}`)];
 
-const external = [...builtinModules, ...builtinModules.map((moduleName) => `node:${moduleName}`), ...RUNTIME_EXTERNALS];
-
+// -------------------------
+// Build configuration
+// -------------------------
 export default defineConfig({
-  // Shorthand for src/ imports
-  resolve: { alias: { '@': resolve('.', 'src') } },
-
   build: {
-    outDir: 'dist',
-    emptyOutDir: true,
+    // No source maps in published output
     sourcemap: false,
-    minify: false,
+
+    // Clean `dist/` before building (primary library build)
+    emptyOutDir: true,
+
     target: 'node20',
-    ssr: true,
 
-    // Library entry point - produces dist/index.js (ESM)
-    lib: { entry: { index: resolve('.', 'src/index.ts') } },
+    // Library mode: single entry, dual format output
+    lib: {
+      entry: 'src/index.ts',
+      name: 'html-cleaner',
+      formats: ['es', 'cjs'],
+      fileName: (format) => (format === 'es' ? 'index.js' : 'index.cjs'),
+    },
 
-    rollupOptions: { external, output: [{ format: 'es', entryFileNames: '[name].js', chunkFileNames: '[name].js' }] },
+    rollupOptions: { external, output: { exports: 'named' } },
+
+    outDir: 'dist',
   },
+
+  // -------------------------
+  // Plugins
+  // -------------------------
+  // Declarations are scoped to `src`: the shared tsconfig also covers tests and
+  // build configs, and without this the plugin would write types/tests/** and
+  // types/*.config.d.ts (the reference project deletes those in a postbuild
+  // step; not generating them is cheaper and safer).
+  plugins: [dts({ include: ['src'], insertTypesEntry: true, outDirs: 'types' })],
 });
