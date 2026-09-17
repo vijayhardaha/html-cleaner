@@ -1,0 +1,105 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+# HUSKY=0 stops the `prepare` script from installing git hooks in CI.
+env:
+  HUSKY: 0
+
+jobs:
+  verify:
+    name: Node ${{ matrix.node }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        node: ["20", "22", "24"]
+        include:
+          # One non-Linux run to catch path and line-ending assumptions.
+          - os: macos-latest
+            node: "22"
+          - os: windows-latest
+            node: "22"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: Lint
+        run: bun run lint:check
+
+      - name: Check formatting
+        run: bun run format:check
+
+      - name: Test with coverage
+        run: bun run test:coverage
+
+      - name: Build
+        run: bun run build
+
+      - name: Smoke test the built CLI
+        shell: bash
+        run: |
+          node dist/cli/index.cjs --version
+          node dist/cli/index.cjs --help > /dev/null
+
+          actual=$(printf '<p class="foo" style="color:red"><span><b>Hello</b></span>&nbsp;&nbsp;</p>\n' \
+            | node dist/cli/index.cjs --remove-styles --remove-classes --remove-spans \
+                --convert-bold --collapse-nbsp --remove-empty)
+
+          expected='<p><strong>Hello</strong> </p>'
+          if [ "$actual" != "$expected" ]; then
+            echo "Smoke test failed"
+            echo "expected: $expected"
+            echo "actual:   $actual"
+            exit 1
+          fi
+
+  bun:
+    name: Bun
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: Lint
+        run: bun run lint:check
+
+      - name: Test with coverage
+        run: bun run test:coverage
+
+      - name: Build
+        run: bun run build
+
+      - name: Run the built CLI under Bun
+        run: |
+          bun dist/cli/index.cjs --version
+          printf '<p class="x">Hi</p>' | bun dist/cli/index.cjs --remove-classes
