@@ -1,8 +1,16 @@
 // =======================================================================
 // Typescript Build Configuration (declaration emit)
 // =======================================================================
-// Purpose: Emits .d.ts + .d.ts.map for the library entry into dist/.
+// Purpose: Emits .d.ts for the library entry into `types/`.
 //          The JavaScript bundles themselves are produced by Vite.
+//
+//          Why this file exists: the main `tsconfig.json` type-checks src,
+//          tests, and build configs in one program, and TypeScript emits
+//          declarations for every file in a program - there is no way to
+//          emit for one part only. Emitting from the main config would write
+//          `types/tests/**.d.ts`, `types/vite.config.d.ts`, and friends.
+//          This config narrows the program to `src` so only library types
+//          are published, and it never runs `tsc` over tests or configs.
 // =======================================================================
 
 {
@@ -14,8 +22,9 @@
     "emitDeclarationOnly": true,
     "incremental": false,
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "types",
+    "declarationDir": "types"
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "dist", "coverage", "tests"]
+  "exclude": ["node_modules", "dist", "types", "coverage", "tests"]
 }

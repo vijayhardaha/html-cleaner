@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
-import { getPreset, getPresetValues, isPresetName, listPresets } from '../../src/presets/index';
 import { createDefaultOptions } from '../../src/core/types';
 import type { CleanerOptions } from '../../src/core/types';
+import { getPreset, getPresetValues, isPresetName, listPresets } from '../../src/presets/index';
 import type { PresetName } from '../../src/presets/index';
 
 /** Expected stored values for every preset, taken from the plan definitions. */

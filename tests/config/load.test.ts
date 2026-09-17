@@ -1,14 +1,21 @@
+import { mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+
 import { describe, expect, it } from 'vitest';
 
 import { loadConfig } from '../../src/config/load';
 import { mergeOptions } from '../../src/config/merge';
 import { createDefaultOptions } from '../../src/core/types';
 import type { CleanerOptions } from '../../src/core/types';
-import { mkdtemp, rm, writeFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
 
-/** Read a JSON config file written into a fresh temporary directory. */
+/**
+ * Read a JSON config file written into a fresh temporary directory.
+ *
+ * @param {string} content - JSON content written to the config file.
+ *
+ * @returns {Promise<string>} Path of the written config file.
+ */
 async function writeTempConfig(content: string): Promise<string> {
   const directory = await mkdtemp(join(tmpdir(), 'html-cleaner-config-'));
   const filePath = join(directory, 'cleaner.json');

@@ -1,18 +1,28 @@
-import { describe, expect, it } from 'vitest';
-
-import { Readable } from 'node:stream';
-
-import { assertSafeOutputTarget, readInput, readStdin, writeOutput } from '../../src/cli/io';
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { Readable } from 'node:stream';
 
-/** Create a readable stream that emits the given chunks. */
+import { describe, expect, it } from 'vitest';
+
+import { assertSafeOutputTarget, readInput, readStdin, writeOutput } from '../../src/cli/io';
+
+/**
+ * Create a readable stream that emits the given chunks.
+ *
+ * @param {string[]} chunks - Chunks emitted by the stream in order.
+ *
+ * @returns {Readable} Stream over the given chunks.
+ */
 function streamOf(chunks: string[]): Readable {
   return Readable.from(chunks);
 }
 
-/** Create a temporary directory for file-backed tests. */
+/**
+ * Create a temporary directory for file-backed tests.
+ *
+ * @returns {Promise<string>} Path of the created directory.
+ */
 async function makeTempDir(): Promise<string> {
   return mkdtemp(join(tmpdir(), 'html-cleaner-io-'));
 }

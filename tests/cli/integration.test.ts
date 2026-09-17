@@ -1,12 +1,19 @@
-import { describe, expect, it } from 'vitest';
-
-import { runCli } from '../../src/cli/index';
-import type { CliEnvironment } from '../../src/cli/index';
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-/** Capture stdout and stderr into arrays with a fixed stdin payload. */
+import { describe, expect, it } from 'vitest';
+
+import { runCli } from '../../src/cli/index';
+import type { CliEnvironment } from '../../src/cli/index';
+
+/**
+ * Capture stdout and stderr into arrays with a fixed stdin payload.
+ *
+ * @param {string} stdinText - Text returned by the mocked stdin reader.
+ *
+ * @returns {CliEnvironment & { out: string[]; err: string[] }} Environment recording stdout and stderr.
+ */
 function createTestEnvironment(stdinText = ''): CliEnvironment & { out: string[]; err: string[] } {
   const out: string[] = [];
   const err: string[] = [];

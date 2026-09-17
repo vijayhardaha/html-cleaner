@@ -1,7 +1,7 @@
-import { describe, expect, it } from 'vitest';
-
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+
+import { describe, expect, it } from 'vitest';
 
 import { cleanHtml } from '../../src/core/cleaner';
 import { getPreset, listPresets } from '../../src/presets/index';

@@ -7,6 +7,7 @@
  * ========================================================================
  */
 import type { Root } from 'hast';
+
 import type { CleanerOptions, HtmlTransform, TransformStats } from '../../src/core/types';
 /**
  * Outcome of a single transform run.

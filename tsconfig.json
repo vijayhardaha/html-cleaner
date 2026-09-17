@@ -37,7 +37,17 @@
 
   // ---- Includes ----
   // Files to include in the project type-checking scope
-  "include": ["*.config.mjs", "*.config.ts", "*.d.ts", "**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "**/*.mjs", "**/*.cjs"],
+  "include": [
+    "*.config.mjs",
+    "*.config.ts",
+    "*.d.ts",
+    "**/*.js",
+    "**/*.jsx",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.mjs",
+    "**/*.cjs"
+  ],
 
   // ---- Excludes ----
   "exclude": ["node_modules", "coverage", "dist", "types"]

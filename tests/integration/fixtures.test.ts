@@ -1,14 +1,20 @@
-import { describe, expect, it } from 'vitest';
-
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+
+import { describe, expect, it } from 'vitest';
 
 import { cleanHtml } from '../../src/core/cleaner';
 import { getPreset } from '../../src/presets/index';
 
 const FIXTURES = join(import.meta.dirname, '../fixtures');
 
-/** Read a fixture file from tests/fixtures. */
+/**
+ * Read a fixture file from tests/fixtures.
+ *
+ * @param {string} name - Fixture file name.
+ *
+ * @returns {Promise<string>} Fixture contents.
+ */
 async function readFixture(name: string): Promise<string> {
   return readFile(join(FIXTURES, name), 'utf8');
 }
