@@ -1,23 +1,52 @@
 {
-  "name": "html-cleaner-cli",
+  "name": "@vijayhardaha/html-cleaner",
   "version": "0.1.0",
   "description": "Command-line HTML cleaner: parses HTML into an AST, applies composable transformations, and serializes predictable cleaned HTML.",
-  "type": "module",
+  "keywords": [
+    "html",
+    "html-cleaner",
+    "cleaner",
+    "sanitize",
+    "cli",
+    "ast",
+    "hast",
+    "rehype",
+    "unified",
+    "formatter"
+  ],
+  "homepage": "https://github.com/vijayhardaha/html-cleaner",
+  "bugs": {
+    "url": "https://github.com/vijayhardaha/html-cleaner/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vijayhardaha/html-cleaner.git"
+  },
   "license": "MIT",
+  "author": {
+    "name": "Vijay Hardaha",
+    "url": "https://github.com/vijayhardaha"
+  },
+  "type": "module",
   "engines": {
-    "node": ">=20"
+    "node": ">=20.0.0"
   },
   "bin": {
     "html-cleaner": "./dist/cli/index.cjs"
   },
+  "files": [
+    "dist",
+    "src",
+    "types",
+    "LICENSE",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./types/index.d.ts",
-  "files": [
-    "dist",
-    "types",
-    "README.md"
-  ],
   "exports": {
     ".": {
       "types": "./types/index.d.ts",
@@ -43,11 +72,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "commander": "^15.0.0",
-    "property-information": "^7.2.0",
-    "rehype-parse": "^9.0.1",
-    "rehype-stringify": "^10.0.1",
-    "unified": "^11.0.5"
+    "@types/hast": "^3.0.5"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.2",
@@ -56,12 +81,12 @@
     "@eslint/compat": "^2.1.1",
     "@eslint/js": "^10.0.1",
     "@prettier/plugin-xml": "^3.4.2",
-    "@types/hast": "^3.0.5",
     "@types/node": "^22.20.3",
     "@typescript-eslint/eslint-plugin": "^8.70.0",
     "@typescript-eslint/parser": "^8.70.0",
     "@vijayhardaha/dev-config": "^2.6.2",
     "@vitest/coverage-v8": "^5.0.1",
+    "commander": "^15.0.0",
     "eslint": "^10.10.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "^4.4.5",
@@ -71,10 +96,14 @@
     "globals": "^17.12.0",
     "husky": "^9.1.7",
     "prettier": "^3.9.7",
+    "property-information": "^7.2.0",
+    "rehype-parse": "^9.0.1",
+    "rehype-stringify": "^10.0.1",
     "rolldown": "^1.2.9",
     "rollup": "^4.63.3",
     "typescript": "^6",
     "typescript-eslint": "^8.70.0",
+    "unified": "^11.0.5",
     "vite": "^8.3.0",
     "vite-plugin-dts": "^5.1.0",
     "vitest": "^5.0.1"
