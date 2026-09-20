@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
+import { createTransformContext } from '../../src/core/context';
+import { createDefaultOptions } from '../../src/core/types';
 import { removeTables, tablesToDivs } from '../../src/transforms/tables';
 import { runTransform } from '../helpers/run-transform';
 
@@ -50,6 +52,39 @@ describe('removeTables', () => {
 
     expect(result.html).toBe('Titlea');
   });
+});
+it('keeps inter-tag whitespace when no context is supplied', () => {
+  const result = runTransform('<div>\n  <table>\n    <tr><td>a</td></tr>\n  </table>\n</div>', [removeTables()]);
+
+  expect(result.html).toBe('<div>\n  \n    a\n  \n</div>');
+});
+
+it('keeps inter-tag whitespace when collapseNbsp is off', () => {
+  const context = createTransformContext({ ...createDefaultOptions(), collapseNbsp: false });
+  const result = runTransform('<div>\n  <table>\n    <tr><td>a</td></tr>\n  </table>\n</div>', [removeTables(context)]);
+
+  expect(result.html).toBe('<div>\n  \n    a\n  \n</div>');
+});
+
+it('drops inter-tag whitespace when collapseNbsp is on', () => {
+  const context = createTransformContext({ ...createDefaultOptions(), collapseNbsp: true });
+  const result = runTransform('<div>\n  <table>\n    <tr><td>a</td></tr>\n  </table>\n</div>', [removeTables(context)]);
+
+  expect(result.html).toBe('<div>\n  a\n</div>');
+});
+
+it('keeps cell text that mixes whitespace with content', () => {
+  const context = createTransformContext({ ...createDefaultOptions(), collapseNbsp: true });
+  const result = runTransform('<table><tr><td> a </td></tr></table>', [removeTables(context)]);
+
+  expect(result.html).toBe(' a ');
+});
+
+it('drops whitespace-only text inside a cell when collapseNbsp is on', () => {
+  const context = createTransformContext({ ...createDefaultOptions(), collapseNbsp: true });
+  const result = runTransform('<table><tr><td>\n  <b>x</b>\n</td></tr></table>', [removeTables(context)]);
+
+  expect(result.html).toBe('<b>x</b>');
 });
 
 describe('tablesToDivs', () => {

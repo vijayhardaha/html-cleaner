@@ -9,7 +9,7 @@
 
 import { createTransformContext } from './context';
 import { runTransforms } from './pipeline';
-import type { HtmlTransform, CleanerOptions, CleanResult } from './types';
+import type { HtmlTransform, CleanerOptions, CleanResult, TransformContext } from './types';
 import { createDefaultOptions } from './types';
 import { formatHtml } from '../formatter/format';
 import { parseHtml } from '../parser/parse';
@@ -46,10 +46,11 @@ export function resolveOptions(overrides: Partial<CleanerOptions> = {}): Cleaner
  * table removal wins and conversion is skipped.
  *
  * @param {CleanerOptions} options - Resolved cleaner options.
+ * @param {TransformContext} context - Per-run context handed to transforms that read resolved options.
  *
  * @returns {HtmlTransform[]} Transforms to run, in order.
  */
-export function buildTransforms(options: CleanerOptions): HtmlTransform[] {
+export function buildTransforms(options: CleanerOptions, context?: TransformContext): HtmlTransform[] {
   const transforms: HtmlTransform[] = [];
 
   if (options.removeComments) {
@@ -75,7 +76,7 @@ export function buildTransforms(options: CleanerOptions): HtmlTransform[] {
   }
 
   if (options.removeTables) {
-    transforms.push(removeTables());
+    transforms.push(removeTables(context));
   } else if (options.tablesToDiv) {
     transforms.push(tablesToDivs());
   }
@@ -155,7 +156,7 @@ export function cleanHtml(input: string, overrides: Partial<CleanerOptions> = {}
   const context = createTransformContext(options);
   const root = parseHtml(input);
 
-  runTransforms(root, buildTransforms(options), context);
+  runTransforms(root, buildTransforms(options, context), context);
 
   if (options.format) {
     formatHtml(root, options);

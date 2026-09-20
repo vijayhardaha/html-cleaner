@@ -7,8 +7,8 @@
  * ========================================================================
  */
 
-import { visitContent } from '../core/tree';
-import type { HtmlTransform } from '../core/types';
+import { isText, visitContent } from '../core/tree';
+import type { HtmlTransform, TransformContext } from '../core/types';
 import { isVoidElement } from '../core/void-elements';
 
 /** Elements that carry table structure. */
@@ -30,22 +30,35 @@ export const TABLE_TAGS: ReadonlySet<string> = new Set([
  *
  * Structural elements are replaced by their children, so cell content and
  * ordering survive. Void `col` elements are removed outright, because they
- * have no content to keep.
+ * have no content to keep. Whitespace-only text that only ever separated
+ * table tags is dropped as well: unwrapping would splice it into the parent,
+ * and an all-text container is one the formatter deliberately leaves alone.
+ *
+ * @param {TransformContext} context - Per-run context carrying options and stats.
  *
  * @returns {HtmlTransform} Transform that unwraps table structure and counts it.
  */
-export function removeTables(): HtmlTransform {
+export function removeTables(context?: TransformContext): HtmlTransform {
+  // Runs `collapseNbsp` first, so plain whitespace is the only residue to drop.
+  const dropWhitespaceOnlyText = context?.options.collapseNbsp ?? false;
+
   return {
     name: 'tables-remove',
-    apply(root, context) {
+    apply(root, transformContext) {
       visitContent(root, (node) => {
         if (node.type !== 'element' || !TABLE_TAGS.has(node.tagName.toLowerCase())) {
           return node;
         }
 
-        context.stats.removedTableElements += 1;
+        transformContext.stats.removedTableElements += 1;
 
-        return isVoidElement(node.tagName) ? null : node.children;
+        if (isVoidElement(node.tagName)) {
+          return null;
+        }
+
+        return dropWhitespaceOnlyText
+          ? node.children.filter((child) => !(isText(child) && child.value.trim() === ''))
+          : node.children;
       });
     },
   };
