@@ -98,6 +98,20 @@ describe('real-world fixtures', () => {
     expect(result.html).toContain('End');
     expect(result.html).not.toContain('<table');
   });
+  it('leaves no orphaned table whitespace for the formatter under the aggressive preset', async () => {
+    const input = await readFixture('messy-table.html');
+    const result = cleanHtml(input, getPreset('aggressive'));
+
+    expect(result.html).toBe('\n    Sales\n  TotalsQ1100Q2End\n');
+  });
+
+  it('leaves no orphaned whitespace when removed tables and empty elements share a container', () => {
+    const input =
+      '<div class="wrapper">\n  <table>\n    <tr><td>Region</td><td>Q1</td></tr>\n  </table>\n  <p>&nbsp;</p>\n</div>';
+    const result = cleanHtml(input, getPreset('aggressive'));
+
+    expect(result.html).toBe('<div>\n  RegionQ1\n</div>\n');
+  });
 
   it('converts a messy table into nested divs', async () => {
     const input = await readFixture('messy-table.html');
