@@ -5,6 +5,23 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-09-20
+
+### Fixed
+
+- `--remove-tables` no longer leaves orphaned whitespace-only text nodes behind when unwrapping
+  table structure. The residue used to splice into the parent as text, and because the formatter
+  deliberately leaves all-text containers untouched, it survived `--format` as stray blank lines
+  and indentation (visible with the `aggressive` preset). When `collapseNbsp` is active, that
+  inter-tag whitespace is now dropped during the unwrap.
+- `--remove-empty` no longer leaves the whitespace-only sibling that preceded a removed element.
+  The orphaned separator is dropped along with the element when `collapseNbsp` is active, so
+  formatted output no longer ends with a trailing blank line where an empty element (for example
+  `<p>&nbsp;</p>`) used to be. Inline spacing is preserved: text following a removed inline
+  element, such as the space in `Hello <span></span>world`, is never touched.
+
+Both behaviors remain opt-out via `collapseNbsp: false`, which keeps all original whitespace.
+
 ## [1.0.0] - 2026-09-17
 
 Initial release.
@@ -39,4 +56,5 @@ Initial release.
 - This tool normalizes markup. It is **not** a security sanitizer and does not guarantee removal of
   dangerous content from untrusted input.
 
+[1.0.1]: https://github.com/vijayhardaha/html-cleaner/releases/tag/v1.0.1
 [1.0.0]: https://github.com/vijayhardaha/html-cleaner/releases/tag/v1.0.0
