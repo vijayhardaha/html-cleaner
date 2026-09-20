@@ -89,12 +89,19 @@ export function isNodeEmpty(node: Element, options: CleanerOptions): boolean {
 /**
  * Remove empty children from a container, deepest descendants first.
  *
+ * When `collapseNbsp` is active, whitespace-only text nodes are layout
+ * residue rather than authored content (the NBSP variants were already
+ * collapsed to plain spaces), so a whitespace-only sibling that ends up
+ * orphaned by a removal is dropped with it. An all-text container is one
+ * the formatter deliberately leaves alone, so the residue has to go here.
+ *
  * @param {ContentContainer} container - Container whose children are pruned.
  * @param {CleanerOptions} options - Resolved cleaner options.
  *
  * @returns {number} Number of elements removed, including nested ones.
  */
 function pruneEmpty(container: ContentContainer, options: CleanerOptions): number {
+  const dropWhitespaceOnlyText = options.collapseNbsp;
   const next: RootContent[] = [];
   let removed = 0;
 
@@ -104,6 +111,18 @@ function pruneEmpty(container: ContentContainer, options: CleanerOptions): numbe
 
       if (isNodeEmpty(child, options)) {
         removed += 1;
+
+        const previous = next[next.length - 1];
+
+        if (
+          dropWhitespaceOnlyText
+          && previous !== undefined
+          && previous.type === 'text'
+          && previous.value.trim() === ''
+        ) {
+          next.pop();
+        }
+
         continue;
       }
     }

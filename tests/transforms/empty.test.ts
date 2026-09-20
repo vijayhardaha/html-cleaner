@@ -100,4 +100,47 @@ describe('removeEmptyElements', () => {
     expect(result.html).toBe('<p>Keep</p>');
     expect(result.stats.removedEmptyNodes).toBe(0);
   });
+
+  it('drops the whitespace-only sibling orphaned by a removal when collapseNbsp is on', () => {
+    const result = runTransform('<div>\n  <p></p>\n  <p>keep</p>\n</div>', [removeEmptyElements()], {
+      collapseNbsp: true,
+    });
+
+    expect(result.html).toBe('<div>\n  <p>keep</p>\n</div>');
+    expect(result.stats.removedEmptyNodes).toBe(1);
+  });
+
+  it('keeps the orphaned whitespace sibling when collapseNbsp is off', () => {
+    const result = runTransform('<div>\n  <p></p>\n  <p>keep</p>\n</div>', [removeEmptyElements()], {
+      collapseNbsp: false,
+    });
+
+    expect(result.html).toBe('<div>\n  \n  <p>keep</p>\n</div>');
+  });
+
+  it('keeps inline text around a removed empty inline element', () => {
+    const result = runTransform('<p>a<span></span>b</p>', [removeEmptyElements()], { collapseNbsp: true });
+
+    expect(result.html).toBe('<p>ab</p>');
+  });
+
+  it('drops a shared whitespace separator once when two siblings are removed in a row', () => {
+    const result = runTransform('<div>\n  <p>&nbsp;</p>\n  <p></p>\n</div>', [removeEmptyElements()], {
+      collapseNbsp: true,
+      removeEmptyNbsp: true,
+    });
+
+    expect(result.html).toBe('');
+    // Two paragraphs plus the outer div, which is whitespace-only once they are gone.
+    expect(result.stats.removedEmptyNodes).toBe(3);
+  });
+
+  it('keeps the text node that follows a removed element', () => {
+    const result = runTransform('<div>\n  <p>&nbsp;</p>\n  after</div>', [removeEmptyElements()], {
+      collapseNbsp: true,
+      removeEmptyNbsp: true,
+    });
+
+    expect(result.html).toBe('<div>\n  after</div>');
+  });
 });
